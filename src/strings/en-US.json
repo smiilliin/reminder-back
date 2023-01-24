@@ -1,0 +1,7 @@
+{
+  "TOKEN_WRONG": "the Token is wrong.",
+  "REMINDER_WRONG": "the Reminder is wrong.",
+  "UNKNOWN_ERROR": "An unknown error has occurred.",
+  "REMINDER_NOT_FOUND": "Any reminders are not found.",
+  "START_OR_SIZE_WRONG": "the Start or Size values are wrong."
+}

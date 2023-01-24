@@ -1,0 +1,7 @@
+{
+  "TOKEN_WRONG": "토큰이 바르지 않습니다.",
+  "REMINDER_WRONG": "Reminder가 바르지 않습니다.",
+  "UNKNOWN_ERROR": "알 수 없는 오류가 발생했습니다.",
+  "REMINDER_NOT_FOUND": "Reminder가 없습니다.",
+  "START_OR_SIZE_WRONG": "Start 혹은 Size값이 바르지 않습니다."
+}
