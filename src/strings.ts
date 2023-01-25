@@ -6,7 +6,7 @@ class Strings {
 
   constructor() {
     this.router = express.Router();
-    this.router.use(express.static(path.join(__dirname, "strings"), { extensions: ["json"] }));
+    this.router.use(express.static(path.join(__dirname, "../strings"), { extensions: ["json"] }));
   }
   use(app: express.Express) {
     app.use("/strings", this.router);
