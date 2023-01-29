@@ -96,7 +96,7 @@ app.get("/", (req, res) => {
 
   if (!start && !size && typeof start != "number" && typeof size != "number") {
     return res.status(400).send({
-      reason: "START_OR_END_WRONG",
+      reason: "START_OR_SIZE_WRONG",
     });
   }
 
