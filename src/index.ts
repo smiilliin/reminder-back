@@ -5,7 +5,6 @@ import mysql from "mysql";
 import express from "express";
 import Strings from "./strings";
 import { v4 as createUUID } from "uuid";
-import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
@@ -78,15 +77,6 @@ const reminderDBToReminder = (reminderDB: IReminderDB) => {
     uuid: reminderDB.uuid,
   };
 };
-
-const apiLimiter = rateLimit({
-  windowMs: 30 * 1000, // 30 seconds
-  max: 10, // 10 Requests
-  standardHeaders: false,
-  legacyHeaders: false,
-});
-
-app.use(apiLimiter);
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
