@@ -1,7 +1,7 @@
 import TokenGeneration from "./generation";
 import fs from "fs";
 import dotenv from "dotenv";
-import mysql, { createConnection } from "mysql";
+import mysql from "mysql";
 import express from "express";
 import Strings from "./strings";
 import { v4 as createUUID } from "uuid";
