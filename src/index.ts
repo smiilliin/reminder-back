@@ -78,6 +78,11 @@ const reminderDBToReminder = (reminderDB: IReminderDB) => {
   };
 };
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
+
 app.get("/", (req, res) => {
   const tokenString = req.headers.authorization;
   const token = generation.verifyAccessToken(tokenString);
