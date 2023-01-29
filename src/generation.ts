@@ -1,6 +1,5 @@
 import mysql from "mysql";
 import jwt from "jsonwebtoken";
-import util from "util";
 import { addDays, addMinutes } from "./time";
 
 interface IToken {
@@ -14,48 +13,74 @@ interface IRefreshToken extends IToken {
 interface IAccessToken extends IToken {
   id: string;
 }
+interface IGeneration {
+  id: string;
+  generation: number;
+}
 
 class TokenGeneration {
   private pool: mysql.Pool;
   private hmacKey: Buffer;
-  private getConnection: () => Promise<mysql.PoolConnection>;
 
   constructor(config: mysql.PoolConfig, hmacKey: Buffer) {
     this.pool = mysql.createPool(config);
     this.hmacKey = hmacKey;
-    this.getConnection = util.promisify(this.pool.getConnection).bind(this.pool);
   }
   private async getGeneration(id: string): Promise<number> {
-    const connection = await this.getConnection();
-    const query = util.promisify(connection.query).bind(connection);
+    return new Promise((resolve, reject) => {
+      this.pool.getConnection((err, connection) => {
+        try {
+          if (err) {
+            return reject(err);
+          }
 
-    try {
-      const q: any = await query(`SELECT generation FROM generation where id="${id}";`);
+          connection.query(`SELECT generation FROM generation WHERE id=?`, [id], (err, results: Array<IGeneration>) => {
+            if (err) {
+              return reject(err);
+            }
 
-      //generation이 없는 ID
-      if (q.length == 0) {
-        query(`INSERT INTO generation values("${id}", 0);`);
-        return 0;
-      }
+            //ID without generation
+            if (results.length == 0) {
+              connection.query(`INSERT INTO generation VALUES(?, 0)`, [id]);
+              return resolve(0);
+            }
 
-      return q[0].generation;
-    } finally {
-      connection.release();
-    }
+            return resolve(results[0].generation);
+          });
+        } finally {
+          connection.release();
+        }
+      });
+    });
   }
   async addGeneration(id: string): Promise<void> {
-    const connection = await this.getConnection();
-    const query = util.promisify(connection.query).bind(connection);
+    return new Promise((resolve, reject) => {
+      this.pool.getConnection((err, connection) => {
+        if (err) {
+          return reject(err);
+        }
 
-    query(`UPDATE generation set generation=generation+1 where id="${id}";`);
+        try {
+          connection.query(`UPDATE generation SET generation=generation+1 WHERE id=?;`, [id]);
+          resolve();
+        } finally {
+          connection.release();
+        }
+      });
+    });
   }
   async checkGeneration(token: IRefreshToken): Promise<boolean> {
-    const _generation = await this.getGeneration(token.id);
+    try {
+      const _generation = await this.getGeneration(token.id);
 
-    if (_generation > token.generation) {
+      if (_generation > token.generation) {
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error(err);
       return false;
     }
-    return true;
   }
   async createRefreshToken(id: string, days: number): Promise<IRefreshToken> {
     const refreshToken: IRefreshToken = {
