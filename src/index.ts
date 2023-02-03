@@ -1,4 +1,4 @@
-import TokenGeneration from "./generation";
+import TokenGeneration from "token-generation";
 import fs from "fs";
 import dotenv from "dotenv";
 import mysql from "mysql";
