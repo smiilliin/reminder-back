@@ -1,20 +1,18 @@
 import TokenGeneration from "token-generation";
 import fs from "fs";
-import dotenv from "dotenv";
 import mysql from "mysql";
 import express from "express";
 import Strings from "./strings";
 import { v4 as createUUID } from "uuid";
-
-dotenv.config();
+import { env } from "./env";
 
 const hmacKey = Buffer.from(fs.readFileSync("../hmacKey").toString(), "hex"); //HMAC KEY
 
 const dbConfig = {
-  host: process.env["DB_HOST"],
-  user: process.env["DB_USER"],
-  password: process.env["DB_PASSWORD"],
-  database: process.env["DB_DATABASE"],
+  host: env.db_host,
+  user: env.db_user,
+  password: env.db_password,
+  database: env.db_database,
 };
 const pool = mysql.createPool(dbConfig);
 
@@ -281,6 +279,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(err.status || 500).send(`Error ${err.status || 500}`);
 });
 
-app.listen(process.env["WEB_PORT"], () => {
-  console.log(`The program is running on port ${process.env["WEB_PORT"]}`);
+app.listen(env.port, () => {
+  console.log(`The program is running on port ${env.port}`);
 });
