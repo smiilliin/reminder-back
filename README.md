@@ -1,4 +1,4 @@
-# Reminder - Let's not forget
+# Reminder-back - Reminder Backend
 
 ## Usage
 
